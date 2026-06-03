@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>AddTeacherDialog</class>
+ <widget class="QDialog" name="AddTeacherDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>500</width>
+    <height>454</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>添加教师</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QDialog {
+    background: #f7fafc;
+}
+QFrame {
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+QLabel {
+    color: #4a5568;
+    font-size: 14px;
+}
+QLineEdit {
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 14px;
+    background: white;
+}
+QLineEdit:focus {
+    border-color: #48bb78;
+}
+QComboBox {
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 14px;
+    background: white;
+}
+QComboBox:focus {
+    border-color: #48bb78;
+}
+QPushButton {
+    border: none;
+    border-radius: 6px;
+    padding: 10px 24px;
+    font-size: 14px;
+}
+QPushButton#okBtn {
+    background: #48bb78;
+    color: white;
+}
+QPushButton#okBtn:hover {
+    background: #38a169;
+}
+QPushButton#cancelBtn {
+    background: #e2e8f0;
+    color: #4a5568;
+}
+QPushButton#cancelBtn:hover {
+    background: #cbd5e0;
+}
+</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="titleLabel">
+     <property name="styleSheet">
+      <string notr="true">font-size: 20px; font-weight: bold; color: #2d3748; padding: 10px 0;</string>
+     </property>
+     <property name="text">
+      <string>添加新教师</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignmentFlag::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QFrame" name="formFrame">
+     <layout class="QFormLayout" name="formLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="teacherNoLabel">
+        <property name="text">
+         <string>工号 *</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="teacherNoEdit">
+        <property name="placeholderText">
+         <string>请输入工号</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="nameLabel">
+        <property name="text">
+         <string>姓名 *</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="nameEdit">
+        <property name="placeholderText">
+         <string>请输入姓名</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="genderLabel">
+        <property name="text">
+         <string>性别 *</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QComboBox" name="genderCombo">
+        <item>
+         <property name="text">
+          <string>男</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>女</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="titleLabel">
+        <property name="text">
+         <string>职称 *</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QComboBox" name="titleCombo">
+        <item>
+         <property name="text">
+          <string>助教</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>讲师</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>副教授</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>教授</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="collegeLabel">
+        <property name="text">
+         <string>学院 *</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QComboBox" name="collegeCombo"/>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="phoneLabel">
+        <property name="text">
+         <string>联系电话</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QLineEdit" name="phoneEdit">
+        <property name="placeholderText">
+         <string>请输入联系电话</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="emailLabel">
+        <property name="text">
+         <string>邮箱</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1">
+       <widget class="QLineEdit" name="emailEdit">
+        <property name="placeholderText">
+         <string>请输入邮箱（可选）</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Orientation::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="okBtn">
+       <property name="text">
+        <string>确定添加</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="cancelBtn">
+       <property name="text">
+        <string>取消</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Orientation::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>okBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>AddTeacherDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>275</x>
+     <y>430</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>250</x>
+     <y>240</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cancelBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>AddTeacherDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>375</x>
+     <y>430</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>250</x>
+     <y>240</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

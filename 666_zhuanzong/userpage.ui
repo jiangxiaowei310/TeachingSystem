@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>UserPage</class>
+ <widget class="QWidget" name="UserPage">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1000</width>
+    <height>650</height>
+   </rect>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QWidget {
+    background: #f7fafc;
+}
+QFrame {
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+QPushButton {
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 13px;
+}
+QLineEdit {
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 13px;
+}
+QTableView {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    alternate-background-color: #f7fafc;
+}
+QTableView::header {
+    background: #f56565;
+    color: white;
+    font-weight: bold;
+}
+</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QFrame" name="headerFrame">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QLabel" name="titleLabel">
+        <property name="styleSheet">
+         <string notr="true">font-size: 20px; font-weight: bold; color: #2d3748;</string>
+        </property>
+        <property name="text">
+         <string>用户管理</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Orientation::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="searchEdit">
+        <property name="placeholderText">
+         <string>请输入用户名查询</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="searchBtn">
+        <property name="styleSheet">
+         <string notr="true">background: #f56565; color: white;</string>
+        </property>
+        <property name="text">
+         <string>搜索</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="addBtn">
+        <property name="styleSheet">
+         <string notr="true">background: #4299e1; color: white;</string>
+        </property>
+        <property name="text">
+         <string>➕ 添加用户</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="editBtn">
+        <property name="styleSheet">
+         <string notr="true">background: #48bb78; color: white;</string>
+        </property>
+        <property name="text">
+         <string>✏️ 编辑</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="deleteBtn">
+        <property name="styleSheet">
+         <string notr="true">background: #fc8181; color: white;</string>
+        </property>
+        <property name="text">
+         <string>🗑️ 删除</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="resetPwdBtn">
+        <property name="styleSheet">
+         <string notr="true">background: #ed8936; color: white;</string>
+        </property>
+        <property name="text">
+         <string>🔄 重置密码</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTableView" name="tableView">
+     <property name="selectionMode">
+      <enum>QAbstractItemView::SelectionMode::SingleSelection</enum>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QFrame" name="footerFrame">
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QLabel" name="totalLabel">
+        <property name="styleSheet">
+         <string notr="true">font-size: 13px; color: #718096;</string>
+        </property>
+        <property name="text">
+         <string>共 4 条</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Orientation::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="prevBtn">
+        <property name="styleSheet">
+         <string notr="true">background: #e2e8f0; color: #4a5568;</string>
+        </property>
+        <property name="text">
+         <string>上一页</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="pageLabel">
+        <property name="styleSheet">
+         <string notr="true">font-size: 13px; color: #4a5568; padding: 0 10px;</string>
+        </property>
+        <property name="text">
+         <string>1 / 1</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="nextBtn">
+        <property name="styleSheet">
+         <string notr="true">background: #e2e8f0; color: #4a5568;</string>
+        </property>
+        <property name="text">
+         <string>下一页</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="pageSizeLabel">
+        <property name="styleSheet">
+         <string notr="true">font-size: 13px; color: #718096;</string>
+        </property>
+        <property name="text">
+         <string>每页</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="pageSizeCombo">
+        <property name="styleSheet">
+         <string notr="true">border: 1px solid #e2e8f0; border-radius: 6px; padding: 5px;</string>
+        </property>
+        <item>
+         <property name="text">
+          <string>20</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>50</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>100</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="pageSizeUnit">
+        <property name="styleSheet">
+         <string notr="true">font-size: 13px; color: #718096;</string>
+        </property>
+        <property name="text">
+         <string>条</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+ <slots>
+  <slot>on_addBtn_clicked()</slot>
+  <slot>on_editBtn_clicked()</slot>
+  <slot>on_deleteBtn_clicked()</slot>
+  <slot>on_searchBtn_clicked()</slot>
+  <slot>on_resetPwdBtn_clicked()</slot>
+ </slots>
+</ui>

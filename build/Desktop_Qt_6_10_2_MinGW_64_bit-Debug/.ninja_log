@@ -1,0 +1,62 @@
+# ninja log v6
+18	1448	8021564262953841	666_zhuanzong_autogen/timestamp	5c50ab76e89ef3ed
+1452	6391	8021564264159460	CMakeFiles/666_zhuanzong.dir/main.cpp.obj	13428fc42cbdbb4c
+18	1448	8021564262953841	666_zhuanzong_autogen/mocs_compilation.cpp	5c50ab76e89ef3ed
+1449	6150	8021564264128844	CMakeFiles/666_zhuanzong.dir/666_zhuanzong_autogen/mocs_compilation.cpp.obj	ef69306a3cb7ce5c
+6150	8994	8021564311137708	CMakeFiles/666_zhuanzong.dir/addteacherdialog.cpp.obj	75b983d60da5cf6b
+18	1448	8021564262953841	D:/qt 2302/666_zhuanzong/build/Desktop_Qt_6_10_2_MinGW_64_bit-Debug/666_zhuanzong_autogen/timestamp	5c50ab76e89ef3ed
+1507	7521	8021564264713130	CMakeFiles/666_zhuanzong.dir/teachermystudentspage.cpp.obj	697b8879fc37e5c2
+18	1448	8021564262953841	D:/qt 2302/666_zhuanzong/build/Desktop_Qt_6_10_2_MinGW_64_bit-Debug/666_zhuanzong_autogen/mocs_compilation.cpp	5c50ab76e89ef3ed
+3349	3443	8016569076370571	CMakeFiles/666_zhuanzong.dir/databasemannager.cpp.obj	6dd8a1a03096f347
+1470	6079	8021564264346793	CMakeFiles/666_zhuanzong.dir/homepage.cpp.obj	b18b7884bcaeb1bf
+1466	6596	8021564264307554	CMakeFiles/666_zhuanzong.dir/loginwindow.cpp.obj	cc445bf610c24e2c
+1481	6903	8021564264459066	CMakeFiles/666_zhuanzong.dir/classpage.cpp.obj	b9fbc983549b71bb
+6093	9015	8021564310573790	CMakeFiles/666_zhuanzong.dir/addstudentdialog.cpp.obj	d5a690ad0f264e8f
+1457	6093	8021564264212132	CMakeFiles/666_zhuanzong.dir/mainwindow.cpp.obj	6c48ff6869326db9
+1490	7564	8021564264545029	CMakeFiles/666_zhuanzong.dir/collegepage.cpp.obj	40f93fc302ec469e
+1485	7575	8021564264490424	CMakeFiles/666_zhuanzong.dir/majorpage.cpp.obj	7672eb93d3924a8e
+1477	7383	8021564264417798	CMakeFiles/666_zhuanzong.dir/teacherpage.cpp.obj	772aaf33d316551e
+74	87	8016568873638707	clean	8f4b2585a1b6b0ad
+1494	7202	8021564264587983	CMakeFiles/666_zhuanzong.dir/userpage.cpp.obj	70feb43407b15a72
+1474	7620	8021564264376976	CMakeFiles/666_zhuanzong.dir/studentpage.cpp.obj	df2c02a7c47003d
+9015	9667	8021564339790006	666_zhuanzong.exe	73471440217f4e93
+1531	7169	8021564264957367	CMakeFiles/666_zhuanzong.dir/studentcoursepage.cpp.obj	fb1e619e2831e73a
+1510	7118	8021564264748231	CMakeFiles/666_zhuanzong.dir/teachercoursepage.cpp.obj	63ac66d10c96120f
+1535	7450	8021564265003003	CMakeFiles/666_zhuanzong.dir/studentgradepage.cpp.obj	aeb791e6919959c5
+1519	7124	8021564264828563	CMakeFiles/666_zhuanzong.dir/teacherinfopage.cpp.obj	be6081f48f6f2575
+1515	7513	8021564264793386	CMakeFiles/666_zhuanzong.dir/teachergradepage.cpp.obj	9977dc21a2d7d161
+1498	6908	8021564264633197	CMakeFiles/666_zhuanzong.dir/teachermainwindow.cpp.obj	8a3df862a75f869c
+1523	7049	8021564264871208	CMakeFiles/666_zhuanzong.dir/studentmainwindow.cpp.obj	18e26d03950f329e
+1540	7354	8021564265048070	CMakeFiles/666_zhuanzong.dir/studentschedulepage.cpp.obj	a91e89cd5e4f1e22
+6082	8692	8021564310466196	CMakeFiles/666_zhuanzong.dir/studentinfopage.cpp.obj	4d8990884187ca4d
+11	74	8016568873016476	CMakeFiles/clean.additional	692c6fc1e8c4d64b
+1504	6598	8021564264687082	CMakeFiles/666_zhuanzong.dir/teacherhomepage.cpp.obj	4f6f1721632bcfef
+1527	6777	8021564264917055	CMakeFiles/666_zhuanzong.dir/studenthomepage.cpp.obj	5d4fc5325d1fd757
+19	582	8021568438701272	666_zhuanzong_autogen/timestamp	5c50ab76e89ef3ed
+19	582	8021568438701272	666_zhuanzong_autogen/mocs_compilation.cpp	5c50ab76e89ef3ed
+19	582	8021568438701272	D:/qt 2302/666_zhuanzong/build/Desktop_Qt_6_10_2_MinGW_64_bit-Debug/666_zhuanzong_autogen/timestamp	5c50ab76e89ef3ed
+19	582	8021568438701272	D:/qt 2302/666_zhuanzong/build/Desktop_Qt_6_10_2_MinGW_64_bit-Debug/666_zhuanzong_autogen/mocs_compilation.cpp	5c50ab76e89ef3ed
+664	5905	8021568445152147	CMakeFiles/666_zhuanzong.dir/studentinfopage.cpp.obj	4d8990884187ca4d
+608	5928	8021568444601509	CMakeFiles/666_zhuanzong.dir/collegepage.cpp.obj	40f93fc302ec469e
+615	5929	8021568444668591	CMakeFiles/666_zhuanzong.dir/teachermainwindow.cpp.obj	8a3df862a75f869c
+635	6031	8021568444859008	CMakeFiles/666_zhuanzong.dir/teacherinfopage.cpp.obj	be6081f48f6f2575
+589	6077	8021568444397808	CMakeFiles/666_zhuanzong.dir/homepage.cpp.obj	b18b7884bcaeb1bf
+619	6078	8021568444700284	CMakeFiles/666_zhuanzong.dir/teacherhomepage.cpp.obj	4f6f1721632bcfef
+639	6110	8021568444912748	CMakeFiles/666_zhuanzong.dir/studentmainwindow.cpp.obj	18e26d03950f329e
+655	6118	8021568445062479	CMakeFiles/666_zhuanzong.dir/studentgradepage.cpp.obj	aeb791e6919959c5
+583	6160	8021568444342289	CMakeFiles/666_zhuanzong.dir/mainwindow.cpp.obj	6c48ff6869326db9
+668	6279	8021568445199839	CMakeFiles/666_zhuanzong.dir/addstudentdialog.cpp.obj	d5a690ad0f264e8f
+644	6280	8021568444962095	CMakeFiles/666_zhuanzong.dir/studenthomepage.cpp.obj	5d4fc5325d1fd757
+632	6281	8021568444832129	CMakeFiles/666_zhuanzong.dir/teachergradepage.cpp.obj	9977dc21a2d7d161
+586	6283	8021568444372723	CMakeFiles/666_zhuanzong.dir/loginwindow.cpp.obj	cc445bf610c24e2c
+594	6284	8021568444449571	CMakeFiles/666_zhuanzong.dir/studentpage.cpp.obj	df2c02a7c47003d
+659	6388	8021568445104093	CMakeFiles/666_zhuanzong.dir/studentschedulepage.cpp.obj	a91e89cd5e4f1e22
+623	6388	8021568444746021	CMakeFiles/666_zhuanzong.dir/teachermystudentspage.cpp.obj	697b8879fc37e5c2
+648	6452	8021568444997292	CMakeFiles/666_zhuanzong.dir/studentcoursepage.cpp.obj	fb1e619e2831e73a
+612	6462	8021568444634540	CMakeFiles/666_zhuanzong.dir/userpage.cpp.obj	70feb43407b15a72
+627	6576	8021568444781955	CMakeFiles/666_zhuanzong.dir/teachercoursepage.cpp.obj	63ac66d10c96120f
+597	6576	8021568444487764	CMakeFiles/666_zhuanzong.dir/teacherpage.cpp.obj	772aaf33d316551e
+604	6579	8021568444547085	CMakeFiles/666_zhuanzong.dir/majorpage.cpp.obj	7672eb93d3924a8e
+601	6661	8021568444517819	CMakeFiles/666_zhuanzong.dir/classpage.cpp.obj	b9fbc983549b71bb
+5905	8233	8021568497563408	CMakeFiles/666_zhuanzong.dir/addteacherdialog.cpp.obj	75b983d60da5cf6b
+8233	8881	8021568520841414	666_zhuanzong.exe	73471440217f4e93

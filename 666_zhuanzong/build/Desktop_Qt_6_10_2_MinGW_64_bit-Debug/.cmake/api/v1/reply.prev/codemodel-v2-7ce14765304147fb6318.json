@@ -1,0 +1,79 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-4e299a2e0ed8bea79a08.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "666_zhuanzong",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "666_zhuanzong::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-666_zhuanzong-Debug-b7d18a2e7c18cfaf0c43.json",
+					"name" : "666_zhuanzong",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "666_zhuanzong_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-666_zhuanzong_autogen-Debug-650d8653f313e41a2023.json",
+					"name" : "666_zhuanzong_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "666_zhuanzong_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-666_zhuanzong_autogen_timestamp_deps-Debug-10711b7bc50e3acc943b.json",
+					"name" : "666_zhuanzong_autogen_timestamp_deps",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "D:/Qt2023C++/666_zhuanzong/build/Desktop_Qt_6_10_2_MinGW_64_bit-Debug",
+		"source" : "D:/Qt2023C++/666_zhuanzong"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 7
+	}
+}
