@@ -88,6 +88,16 @@ QTableView::header {
        </widget>
       </item>
       <item>
+       <widget class="QPushButton" name="batchImportBtn">
+        <property name="styleSheet">
+         <string notr="true">background: #9f7aea; color: white;</string>
+        </property>
+        <property name="text">
+         <string>📥 批量导入</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="exportBtn">
         <property name="styleSheet">
          <string notr="true">background: #4299e1; color: white;</string>
@@ -114,4 +124,7 @@ QTableView::header {
  </widget>
  <resources/>
  <connections/>
+ <slots>
+  <slot>on_batchImportBtn_clicked()</slot>
+ </slots>
 </ui>

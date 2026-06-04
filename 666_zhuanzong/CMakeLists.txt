@@ -74,6 +74,7 @@ qt_add_executable(666_zhuanzong
     studentinfopage.ui
     addstudentdialog.h addstudentdialog.cpp addstudentdialog.ui
     addteacherdialog.h addteacherdialog.cpp addteacherdialog.ui
+    batchimportdialog.h batchimportdialog.cpp batchimportdialog.ui
 )
 
 target_link_libraries(666_zhuanzong
