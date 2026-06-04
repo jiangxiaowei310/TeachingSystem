@@ -7,6 +7,7 @@
 AddStudentDialog::AddStudentDialog(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::AddStudentDialog)
+    , m_userId(-1)
 {
     ui->setupUi(this);
     this->setWindowTitle("添加学生");
@@ -135,4 +136,42 @@ QString AddStudentDialog::getPhone() const
 QString AddStudentDialog::getEmail() const
 {
     return ui->emailEdit->text();
+}
+
+void AddStudentDialog::setStudentData(int userId, const QString &stuNo, const QString &name, const QString &gender,
+                                      int collegeId, int majorId, int classId, const QString &grade,
+                                      const QString &phone, const QString &email)
+{
+    m_userId = userId;
+    this->setWindowTitle("编辑学生");
+
+    ui->stuNoEdit->setText(stuNo);
+    ui->nameEdit->setText(name);
+    ui->genderCombo->setCurrentText(gender);
+    ui->gradeEdit->setText(grade);
+    ui->phoneEdit->setText(phone);
+    ui->emailEdit->setText(email);
+
+    // 设置学院
+    int collegeIndex = ui->collegeCombo->findData(collegeId);
+    if (collegeIndex >= 0) {
+        ui->collegeCombo->setCurrentIndex(collegeIndex);
+    }
+
+    // 设置专业
+    int majorIndex = ui->majorCombo->findData(majorId);
+    if (majorIndex >= 0) {
+        ui->majorCombo->setCurrentIndex(majorIndex);
+    }
+
+    // 设置班级
+    int classIndex = ui->classCombo->findData(classId);
+    if (classIndex >= 0) {
+        ui->classCombo->setCurrentIndex(classIndex);
+    }
+}
+
+int AddStudentDialog::getUserId() const
+{
+    return m_userId;
 }

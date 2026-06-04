@@ -7,6 +7,7 @@
 AddTeacherDialog::AddTeacherDialog(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::AddTeacherDialog)
+    , m_userId(-1)
 {
     ui->setupUi(this);
     this->setWindowTitle("添加教师");
@@ -65,6 +66,31 @@ QString AddTeacherDialog::getPhone() const
 QString AddTeacherDialog::getEmail() const
 {
     return ui->emailEdit->text();
+}
+
+void AddTeacherDialog::setTeacherData(int userId, const QString &teacherNo, const QString &name, const QString &gender,
+                                      const QString &title, int collegeId, const QString &phone, const QString &email)
+{
+    m_userId = userId;
+    this->setWindowTitle("编辑教师");
+
+    ui->teacherNoEdit->setText(teacherNo);
+    ui->nameEdit->setText(name);
+    ui->genderCombo->setCurrentText(gender);
+    ui->titleCombo->setCurrentText(title);
+    ui->phoneEdit->setText(phone);
+    ui->emailEdit->setText(email);
+
+    // 设置学院
+    int collegeIndex = ui->collegeCombo->findData(collegeId);
+    if (collegeIndex >= 0) {
+        ui->collegeCombo->setCurrentIndex(collegeIndex);
+    }
+}
+
+int AddTeacherDialog::getUserId() const
+{
+    return m_userId;
 }
 
 

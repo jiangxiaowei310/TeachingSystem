@@ -115,7 +115,71 @@ void TeacherPage::on_addBtn_clicked()
 
 void TeacherPage::on_editBtn_clicked()
 {
-    QMessageBox::information(this, "提示", "编辑功能可后续扩展");
+    int row = ui->tableView->currentIndex().row();
+    if (row < 0) {
+        QMessageBox::warning(this, "提示", "请选择一行");
+        return;
+    }
+
+    // 获取用户ID和教师信息
+    int userId = model->data(model->index(row, 1)).toInt(); // user_id 在第2列(index=1)
+    QString teacherNo = model->data(model->index(row, 2)).toString();
+    QString name = model->data(model->index(row, 3)).toString();
+    QString gender = model->data(model->index(row, 4)).toString();
+    QString collegeName = model->data(model->index(row, 5)).toString();
+    QString phone = model->data(model->index(row, 6)).toString();
+    QString email = model->data(model->index(row, 7)).toString();
+
+    // 获取原始ID值和职称
+    int collegeId = -1;
+    QString title;
+
+    QSqlQuery query;
+    query.prepare("SELECT college_id, title FROM teachers WHERE user_id = ?");
+    query.addBindValue(userId);
+    if (query.exec() && query.next()) {
+        collegeId = query.value(0).toInt();
+        title = query.value(1).toString();
+    }
+
+    AddTeacherDialog dialog(this);
+    dialog.setTeacherData(userId, teacherNo, name, gender, title, collegeId, phone, email);
+
+    if (dialog.exec() == QDialog::Accepted) {
+        // 更新教师信息
+        QString newName = dialog.getName();
+        QString newGender = dialog.getGender();
+        QString newTitle = dialog.getTitle();
+        int newCollegeId = dialog.getCollegeId();
+        QString newPhone = dialog.getPhone();
+        QString newEmail = dialog.getEmail();
+
+        QSqlDatabase db = QSqlDatabase::database();
+        db.transaction();
+
+        query.prepare(R"(
+            UPDATE teachers SET name = :name, gender = :gender, title = :title,
+                               college_id = :cid, phone = :phone, email = :email
+            WHERE user_id = :uid
+        )");
+        query.bindValue(":name", newName);
+        query.bindValue(":gender", newGender);
+        query.bindValue(":title", newTitle);
+        query.bindValue(":cid", newCollegeId);
+        query.bindValue(":phone", newPhone);
+        query.bindValue(":email", newEmail);
+        query.bindValue(":uid", userId);
+
+        if (!query.exec()) {
+            db.rollback();
+            QMessageBox::critical(this, "错误", "更新教师信息失败：" + query.lastError().text());
+            return;
+        }
+
+        db.commit();
+        QMessageBox::information(this, "成功", "教师信息更新成功！");
+        loadTeachers();
+    }
 }
 
 void TeacherPage::on_deleteBtn_clicked()

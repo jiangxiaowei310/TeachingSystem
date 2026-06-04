@@ -15,6 +15,11 @@ public:
     explicit AddStudentDialog(QWidget *parent = nullptr);
     ~AddStudentDialog();
 
+    void setStudentData(int userId, const QString &stuNo, const QString &name, const QString &gender,
+                        int collegeId, int majorId, int classId, const QString &grade,
+                        const QString &phone, const QString &email);
+    int getUserId() const;
+
     QString getStuNo() const;
     QString getName() const;
     QString getGender() const;
@@ -31,6 +36,7 @@ private slots:
 
 private:
     Ui::AddStudentDialog *ui;
+    int m_userId;
 
     void loadColleges();
 };

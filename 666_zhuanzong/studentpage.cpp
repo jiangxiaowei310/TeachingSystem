@@ -118,7 +118,80 @@ void StudentPage::on_addBtn_clicked()
 // 编辑
 void StudentPage::on_editBtn_clicked()
 {
-    QMessageBox::information(this, "提示", "编辑功能可后续扩展");
+    int row = ui->tableView->currentIndex().row();
+    if (row < 0) {
+        QMessageBox::warning(this, "提示", "请选择一行");
+        return;
+    }
+
+    // 获取用户ID和学生信息
+    int userId = model->data(model->index(row, 1)).toInt(); // user_id 在第2列(index=1)
+    QString stuNo = model->data(model->index(row, 2)).toString();
+    QString name = model->data(model->index(row, 3)).toString();
+    QString gender = model->data(model->index(row, 4)).toString();
+    QString collegeName = model->data(model->index(row, 5)).toString();
+    QString majorName = model->data(model->index(row, 6)).toString();
+    QString className = model->data(model->index(row, 7)).toString();
+    QString grade = model->data(model->index(row, 8)).toString();
+
+    // 获取原始ID值
+    int collegeId = -1, majorId = -1, classId = -1;
+    QString phone, email;
+
+    QSqlQuery query;
+    query.prepare("SELECT college_id, major_id, class_id, phone, email FROM students WHERE user_id = ?");
+    query.addBindValue(userId);
+    if (query.exec() && query.next()) {
+        collegeId = query.value(0).toInt();
+        majorId = query.value(1).toInt();
+        classId = query.value(2).toInt();
+        phone = query.value(3).toString();
+        email = query.value(4).toString();
+    }
+
+    AddStudentDialog dialog(this);
+    dialog.setStudentData(userId, stuNo, name, gender, collegeId, majorId, classId, grade, phone, email);
+
+    if (dialog.exec() == QDialog::Accepted) {
+        // 更新学生信息
+        QString newName = dialog.getName();
+        QString newGender = dialog.getGender();
+        int newCollegeId = dialog.getCollegeId();
+        int newMajorId = dialog.getMajorId();
+        int newClassId = dialog.getClassId();
+        QString newGrade = dialog.getGrade();
+        QString newPhone = dialog.getPhone();
+        QString newEmail = dialog.getEmail();
+
+        QSqlDatabase db = QSqlDatabase::database();
+        db.transaction();
+
+        query.prepare(R"(
+            UPDATE students SET name = :name, gender = :gender, college_id = :cid,
+                               major_id = :mid, class_id = :clid, grade = :grade,
+                               phone = :phone, email = :email
+            WHERE user_id = :uid
+        )");
+        query.bindValue(":name", newName);
+        query.bindValue(":gender", newGender);
+        query.bindValue(":cid", newCollegeId);
+        query.bindValue(":mid", newMajorId);
+        query.bindValue(":clid", newClassId);
+        query.bindValue(":grade", newGrade);
+        query.bindValue(":phone", newPhone);
+        query.bindValue(":email", newEmail);
+        query.bindValue(":uid", userId);
+
+        if (!query.exec()) {
+            db.rollback();
+            QMessageBox::critical(this, "错误", "更新学生信息失败：" + query.lastError().text());
+            return;
+        }
+
+        db.commit();
+        QMessageBox::information(this, "成功", "学生信息更新成功！");
+        loadStudents();
+    }
 }
 
 // 删除

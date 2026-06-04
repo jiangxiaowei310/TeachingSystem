@@ -15,6 +15,10 @@ public:
     explicit AddTeacherDialog(QWidget *parent = nullptr);
     ~AddTeacherDialog();
 
+    void setTeacherData(int userId, const QString &teacherNo, const QString &name, const QString &gender,
+                        const QString &title, int collegeId, const QString &phone, const QString &email);
+    int getUserId() const;
+
     QString getTeacherNo() const;
     QString getName() const;
     QString getGender() const;
@@ -25,6 +29,7 @@ public:
 
 private:
     Ui::AddTeacherDialog *ui;
+    int m_userId;
 
     void loadColleges();
 };
