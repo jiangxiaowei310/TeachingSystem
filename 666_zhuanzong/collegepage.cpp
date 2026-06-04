@@ -1,11 +1,13 @@
 #include "collegepage.h"
 #include "ui_collegepage.h"
+#include "addcollegedialog.h"
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QMessageBox>
 #include <QSqlTableModel>
 #include <QSqlRelationalTableModel>
+#include <QSqlQueryModel>
 
 CollegePage::CollegePage(QWidget *parent) :
     QWidget(parent),
@@ -44,12 +46,83 @@ void CollegePage::loadColleges()
 
 void CollegePage::on_addBtn_clicked()
 {
-    QMessageBox::information(this, "提示", "添加学院功能可后续扩展");
+    AddCollegeDialog dialog(this);
+    if (dialog.exec() == QDialog::Accepted) {
+        QString collegeName = dialog.getCollegeName();
+        QString collegeCode = dialog.getCollegeCode();
+        QString dean = dialog.getDean();
+        QString phone = dialog.getPhone();
+
+        if (collegeName.isEmpty()) {
+            QMessageBox::warning(this, "警告", "学院名称不能为空！");
+            return;
+        }
+
+        QSqlQuery query;
+        query.prepare(R"(
+            INSERT INTO colleges (college_name, college_code, dean, phone)
+            VALUES (:name, :code, :dean, :phone)
+        )");
+        query.bindValue(":name", collegeName);
+        query.bindValue(":code", collegeCode);
+        query.bindValue(":dean", dean);
+        query.bindValue(":phone", phone);
+
+        if (query.exec()) {
+            QMessageBox::information(this, "成功", "学院添加成功！");
+            loadColleges();
+        } else {
+            QMessageBox::critical(this, "错误", "添加失败：" + query.lastError().text());
+        }
+    }
 }
 
 void CollegePage::on_editBtn_clicked()
 {
-    QMessageBox::information(this, "提示", "编辑功能可后续扩展");
+    int row = ui->tableView->currentIndex().row();
+    if (row < 0) {
+        QMessageBox::warning(this, "提示", "请选择一行");
+        return;
+    }
+
+    int collegeId = model->data(model->index(row, 0)).toInt();
+    QString collegeName = model->data(model->index(row, model->fieldIndex("college_name"))).toString();
+    QString collegeCode = model->data(model->index(row, model->fieldIndex("college_code"))).toString();
+    QString dean = model->data(model->index(row, model->fieldIndex("dean"))).toString();
+    QString phone = model->data(model->index(row, model->fieldIndex("phone"))).toString();
+
+    AddCollegeDialog dialog(this);
+    dialog.setCollegeData(collegeId, collegeName, collegeCode, dean, phone);
+
+    if (dialog.exec() == QDialog::Accepted) {
+        QString newName = dialog.getCollegeName();
+        QString newCode = dialog.getCollegeCode();
+        QString newDean = dialog.getDean();
+        QString newPhone = dialog.getPhone();
+
+        if (newName.isEmpty()) {
+            QMessageBox::warning(this, "警告", "学院名称不能为空！");
+            return;
+        }
+
+        QSqlQuery query;
+        query.prepare(R"(
+            UPDATE colleges SET college_name = :name, college_code = :code, dean = :dean, phone = :phone
+            WHERE college_id = :id
+        )");
+        query.bindValue(":name", newName);
+        query.bindValue(":code", newCode);
+        query.bindValue(":dean", newDean);
+        query.bindValue(":phone", newPhone);
+        query.bindValue(":id", collegeId);
+
+        if (query.exec()) {
+            QMessageBox::information(this, "成功", "学院信息更新成功！");
+            loadColleges();
+        } else {
+            QMessageBox::critical(this, "错误", "更新失败：" + query.lastError().text());
+        }
+    }
 }
 
 void CollegePage::on_deleteBtn_clicked()
@@ -81,11 +154,28 @@ void CollegePage::on_deleteBtn_clicked()
 
 void CollegePage::on_searchBtn_clicked()
 {
-    QString key = ui->searchEdit->text();
+    QString key = ui->searchEdit->text().trimmed();
     if (key.isEmpty()) {
         loadColleges();
         return;
     }
-    model->setFilter(QString("college_name like '%%1%' or college_code like '%%1%'").arg(key));
-    model->select();
+    
+    QSqlQuery query;
+    query.prepare("SELECT * FROM colleges WHERE college_name LIKE ?");
+    query.addBindValue("%" + key + "%");
+    
+    if (query.exec()) {
+        QSqlQueryModel *tempModel = new QSqlQueryModel(this);
+        tempModel->setQuery(query);
+        
+        tempModel->setHeaderData(0, Qt::Horizontal, "学院ID");
+        tempModel->setHeaderData(1, Qt::Horizontal, "学院名称");
+        tempModel->setHeaderData(2, Qt::Horizontal, "学院代码");
+        tempModel->setHeaderData(3, Qt::Horizontal, "院长");
+        tempModel->setHeaderData(4, Qt::Horizontal, "联系电话");
+        
+        ui->tableView->setModel(tempModel);
+    } else {
+        QMessageBox::critical(this, "错误", "搜索失败：" + query.lastError().text());
+    }
 }

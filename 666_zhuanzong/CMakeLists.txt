@@ -74,6 +74,10 @@ qt_add_executable(666_zhuanzong
     studentinfopage.ui
     addstudentdialog.h addstudentdialog.cpp addstudentdialog.ui
     addteacherdialog.h addteacherdialog.cpp addteacherdialog.ui
+    addcollegedialog.h addcollegedialog.cpp addcollegedialog.ui
+    addmajordialog.h addmajordialog.cpp addmajordialog.ui
+    addclassdialog.h addclassdialog.cpp addclassdialog.ui
+    adduserdialog.h adduserdialog.cpp adduserdialog.ui
     batchimportdialog.h batchimportdialog.cpp batchimportdialog.ui
 )
 
