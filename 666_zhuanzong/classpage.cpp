@@ -55,7 +55,6 @@ void ClassPage::on_addBtn_clicked()
     AddClassDialog dialog(this);
     if (dialog.exec() == QDialog::Accepted) {
         QString className = dialog.getClassName();
-        QString classCode = dialog.getClassCode();
         QString grade = dialog.getGrade();
         int majorId = dialog.getMajorId();
         int collegeId = dialog.getCollegeId();
@@ -67,11 +66,10 @@ void ClassPage::on_addBtn_clicked()
 
         QSqlQuery query;
         query.prepare(R"(
-            INSERT INTO classes (class_name, class_code, grade, college_id, major_id)
-            VALUES (:name, :code, :grade, :cid, :mid)
+            INSERT INTO classes (class_name, grade, college_id, major_id)
+            VALUES (:name, :grade, :cid, :mid)
         )");
         query.bindValue(":name", className);
-        query.bindValue(":code", classCode);
         query.bindValue(":grade", grade);
         query.bindValue(":cid", collegeId);
         query.bindValue(":mid", majorId);
@@ -95,7 +93,6 @@ void ClassPage::on_editBtn_clicked()
 
     int classId = model->data(model->index(row, 0)).toInt();
     QString className = model->data(model->index(row, model->fieldIndex("class_name"))).toString();
-    QString classCode = model->data(model->index(row, model->fieldIndex("class_code"))).toString();
     QString grade = model->data(model->index(row, model->fieldIndex("grade"))).toString();
 
     // 获取原始college_id和major_id
@@ -109,11 +106,10 @@ void ClassPage::on_editBtn_clicked()
     }
 
     AddClassDialog dialog(this);
-    dialog.setClassData(classId, className, classCode, grade, majorId, collegeId);
+    dialog.setClassData(classId, className, "", grade, majorId, collegeId);
 
     if (dialog.exec() == QDialog::Accepted) {
         QString newName = dialog.getClassName();
-        QString newCode = dialog.getClassCode();
         QString newGrade = dialog.getGrade();
         int newMajorId = dialog.getMajorId();
         int newCollegeId = dialog.getCollegeId();
@@ -124,12 +120,11 @@ void ClassPage::on_editBtn_clicked()
         }
 
         query.prepare(R"(
-            UPDATE classes SET class_name = :name, class_code = :code, grade = :grade,
+            UPDATE classes SET class_name = :name, grade = :grade,
                             college_id = :cid, major_id = :mid
             WHERE class_id = :id
         )");
         query.bindValue(":name", newName);
-        query.bindValue(":code", newCode);
         query.bindValue(":grade", newGrade);
         query.bindValue(":cid", newCollegeId);
         query.bindValue(":mid", newMajorId);
@@ -176,6 +171,7 @@ void ClassPage::on_searchBtn_clicked()
     QString key = ui->searchEdit->text().trimmed();
     if (key.isEmpty()) {
         loadClasses();
+        ui->tableView->setModel(model);
         return;
     }
     

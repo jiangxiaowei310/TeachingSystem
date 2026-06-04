@@ -169,6 +169,7 @@ void UserPage::on_searchBtn_clicked()
     QString key = ui->searchEdit->text().trimmed();
     if (key.isEmpty()) {
         loadUsers();
+        ui->tableView->setModel(model);
         return;
     }
     

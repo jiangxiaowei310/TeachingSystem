@@ -51,7 +51,6 @@ void MajorPage::on_addBtn_clicked()
     AddMajorDialog dialog(this);
     if (dialog.exec() == QDialog::Accepted) {
         QString majorName = dialog.getMajorName();
-        QString majorCode = dialog.getMajorCode();
         int collegeId = dialog.getCollegeId();
 
         if (majorName.isEmpty()) {
@@ -61,11 +60,10 @@ void MajorPage::on_addBtn_clicked()
 
         QSqlQuery query;
         query.prepare(R"(
-            INSERT INTO majors (major_name, major_code, college_id)
-            VALUES (:name, :code, :cid)
+            INSERT INTO majors (major_name, college_id)
+            VALUES (:name, :cid)
         )");
         query.bindValue(":name", majorName);
-        query.bindValue(":code", majorCode);
         query.bindValue(":cid", collegeId);
 
         if (query.exec()) {
@@ -87,7 +85,6 @@ void MajorPage::on_editBtn_clicked()
 
     int majorId = model->data(model->index(row, 0)).toInt();
     QString majorName = model->data(model->index(row, model->fieldIndex("major_name"))).toString();
-    QString majorCode = model->data(model->index(row, model->fieldIndex("major_code"))).toString();
 
     // 获取原始college_id
     int collegeId = -1;
@@ -99,11 +96,10 @@ void MajorPage::on_editBtn_clicked()
     }
 
     AddMajorDialog dialog(this);
-    dialog.setMajorData(majorId, majorName, majorCode, collegeId);
+    dialog.setMajorData(majorId, majorName, "", collegeId);
 
     if (dialog.exec() == QDialog::Accepted) {
         QString newName = dialog.getMajorName();
-        QString newCode = dialog.getMajorCode();
         int newCollegeId = dialog.getCollegeId();
 
         if (newName.isEmpty()) {
@@ -112,11 +108,10 @@ void MajorPage::on_editBtn_clicked()
         }
 
         query.prepare(R"(
-            UPDATE majors SET major_name = :name, major_code = :code, college_id = :cid
+            UPDATE majors SET major_name = :name, college_id = :cid
             WHERE major_id = :id
         )");
         query.bindValue(":name", newName);
-        query.bindValue(":code", newCode);
         query.bindValue(":cid", newCollegeId);
         query.bindValue(":id", majorId);
 
@@ -161,6 +156,7 @@ void MajorPage::on_searchBtn_clicked()
     QString key = ui->searchEdit->text().trimmed();
     if (key.isEmpty()) {
         loadMajors();
+        ui->tableView->setModel(model);
         return;
     }
     
