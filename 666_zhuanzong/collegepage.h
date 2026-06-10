@@ -1,8 +1,8 @@
 #ifndef COLLEGEPAGE_H
 #define COLLEGEPAGE_H
 
+#include <QSqlQueryModel>
 #include <QWidget>
-#include <QSqlRelationalTableModel>
 
 namespace Ui {
 class CollegePage;
@@ -24,7 +24,12 @@ private slots:
 
 private:
     Ui::CollegePage *ui;
-    QSqlRelationalTableModel *model;
+    QSqlQueryModel *model;
+
+    int currentPage;
+    int pageSize;
+    int totalRecords;
+    int totalPages;
 
     void loadColleges();
 };

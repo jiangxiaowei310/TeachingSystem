@@ -2,7 +2,7 @@
 #define CLASSPAGE_H
 
 #include <QWidget>
-#include <QSqlRelationalTableModel>
+#include <QSqlQueryModel>
 
 namespace Ui {
 class ClassPage;
@@ -24,7 +24,13 @@ private slots:
 
 private:
     Ui::ClassPage *ui;
-    QSqlRelationalTableModel *model;
+    QSqlQueryModel *model;
+
+    int currentPage;
+    int pageSize;
+    int totalRecords;
+    int totalPages;
+
 
     void loadClasses();
 };

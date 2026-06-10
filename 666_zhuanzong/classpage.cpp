@@ -16,27 +16,13 @@ ClassPage::ClassPage(QWidget *parent) :
     ui->setupUi(this);
 
     // 初始化 TableView 模型
-    model = new QSqlRelationalTableModel(this);
-    model->setTable("classes");
-    model->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    model = new QSqlQueryModel(this);
 
-    // 设置关系（显示学院和专业名称而不是ID）
-    model->setRelation(model->fieldIndex("college_id"), QSqlRelation("colleges", "college_id", "college_name"));
-    model->setRelation(model->fieldIndex("major_id"), QSqlRelation("majors", "major_id", "major_name"));
+    currentPage = 1;
+    pageSize = 20;
 
-    // 设置列标题
-    model->setHeaderData(model->fieldIndex("class_id"), Qt::Horizontal, "班级ID");
-    model->setHeaderData(model->fieldIndex("class_name"), Qt::Horizontal, "班级名称");
-    model->setHeaderData(model->fieldIndex("class_code"), Qt::Horizontal, "班级代码");
-    model->setHeaderData(model->fieldIndex("college_id"), Qt::Horizontal, "所属学院");
-    model->setHeaderData(model->fieldIndex("major_id"), Qt::Horizontal, "所属专业");
-    model->setHeaderData(model->fieldIndex("grade"), Qt::Horizontal, "年级");
-    model->setHeaderData(model->fieldIndex("student_count"), Qt::Horizontal, "学生人数");
-
-    // 默认加载所有班级
     loadClasses();
 
-    ui->tableView->setModel(model);
 }
 
 ClassPage::~ClassPage()
@@ -46,8 +32,72 @@ ClassPage::~ClassPage()
 
 void ClassPage::loadClasses()
 {
-    model->setFilter("");
-    model->select();
+    // 总记录数
+    QSqlQuery countQuery;
+    countQuery.exec("SELECT COUNT(*) FROM classes");
+
+    if(countQuery.next())
+    {
+        totalRecords = countQuery.value(0).toInt();
+    }
+
+    // 总页数
+    totalPages =
+        (totalRecords + pageSize - 1)
+        / pageSize;
+
+    if(totalPages == 0)
+        totalPages = 1;
+
+    if(currentPage > totalPages)
+        currentPage = totalPages;
+
+    if(currentPage < 1)
+        currentPage = 1;
+
+    int offset =
+        (currentPage - 1) * pageSize;
+
+    QSqlQuery query;
+
+    query.prepare(R"(
+        SELECT
+            c.class_id,
+            c.class_name,
+            col.college_name,
+            m.major_name,
+            c.grade
+        FROM classes c
+        LEFT JOIN colleges col
+            ON c.college_id = col.college_id
+        LEFT JOIN majors m
+            ON c.major_id = m.major_id
+        LIMIT :offset,:size
+    )");
+
+    query.bindValue(":offset", offset);
+    query.bindValue(":size", pageSize);
+
+    query.exec();
+
+    model->setQuery(std::move(query));
+
+    model->setHeaderData(0,Qt::Horizontal,"班级ID");
+    model->setHeaderData(1,Qt::Horizontal,"班级名称");
+    model->setHeaderData(2,Qt::Horizontal,"所属学院");
+    model->setHeaderData(3,Qt::Horizontal,"所属专业");
+    model->setHeaderData(4,Qt::Horizontal,"年级");
+
+    ui->tableView->setModel(model);
+
+    ui->totalLabel->setText(
+        QString("共 %1 条")
+            .arg(totalRecords));
+
+    ui->pageLabel->setText(
+        QString("%1 / %2")
+            .arg(currentPage)
+            .arg(totalPages));
 }
 
 void ClassPage::on_addBtn_clicked()
@@ -83,6 +133,7 @@ void ClassPage::on_addBtn_clicked()
     }
 }
 
+
 void ClassPage::on_editBtn_clicked()
 {
     int row = ui->tableView->currentIndex().row();
@@ -92,8 +143,10 @@ void ClassPage::on_editBtn_clicked()
     }
 
     int classId = model->data(model->index(row, 0)).toInt();
-    QString className = model->data(model->index(row, model->fieldIndex("class_name"))).toString();
-    QString grade = model->data(model->index(row, model->fieldIndex("grade"))).toString();
+    QString className =
+        model->data(model->index(row,1)).toString();
+    QString grade =
+        model->data(model->index(row,4)).toString();
 
     // 获取原始college_id和major_id
     int collegeId = -1, majorId = -1;
@@ -148,7 +201,8 @@ void ClassPage::on_deleteBtn_clicked()
     }
 
     int classId = model->data(model->index(row, 0)).toInt();
-    QString className = model->data(model->index(row, model->fieldIndex("class_name"))).toString();
+    QString className =
+        model->data(model->index(row,1)).toString();
 
     if (QMessageBox::question(this, "确认删除", QString("确定要删除班级 %1 吗？").arg(className)) != QMessageBox::Yes) {
         return;
@@ -168,30 +222,44 @@ void ClassPage::on_deleteBtn_clicked()
 
 void ClassPage::on_searchBtn_clicked()
 {
-    QString key = ui->searchEdit->text().trimmed();
-    if (key.isEmpty()) {
+    QString key =
+        ui->searchEdit->text().trimmed();
+
+    if(key.isEmpty())
+    {
         loadClasses();
-        ui->tableView->setModel(model);
         return;
     }
-    
+
     QSqlQuery query;
-    query.prepare("SELECT * FROM classes WHERE class_name LIKE ?");
-    query.addBindValue("%" + key + "%");
-    
-    if (query.exec()) {
-        QSqlQueryModel *tempModel = new QSqlQueryModel(this);
-        tempModel->setQuery(query);
-        
-        tempModel->setHeaderData(0, Qt::Horizontal, "班级ID");
-        tempModel->setHeaderData(1, Qt::Horizontal, "班级名称");
-        tempModel->setHeaderData(2, Qt::Horizontal, "班级代码");
-        tempModel->setHeaderData(3, Qt::Horizontal, "年级");
-        tempModel->setHeaderData(4, Qt::Horizontal, "所属学院");
-        tempModel->setHeaderData(5, Qt::Horizontal, "所属专业");
-        
-        ui->tableView->setModel(tempModel);
-    } else {
-        QMessageBox::critical(this, "错误", "搜索失败：" + query.lastError().text());
-    }
+
+    query.prepare(R"(
+        SELECT
+            c.class_id,
+            c.class_name,
+            col.college_name,
+            m.major_name,
+            c.grade
+        FROM classes c
+        LEFT JOIN colleges col
+            ON c.college_id = col.college_id
+        LEFT JOIN majors m
+            ON c.major_id = m.major_id
+        WHERE c.class_name LIKE :key
+    )");
+
+    query.bindValue(":key",
+                    "%" + key + "%");
+
+    query.exec();
+
+    model->setQuery(std::move(query));
+
+    model->setHeaderData(0,Qt::Horizontal,"班级ID");
+    model->setHeaderData(1,Qt::Horizontal,"班级名称");
+    model->setHeaderData(2,Qt::Horizontal,"所属学院");
+    model->setHeaderData(3,Qt::Horizontal,"所属专业");
+    model->setHeaderData(4,Qt::Horizontal,"年级");
+
+    ui->tableView->setModel(model);
 }

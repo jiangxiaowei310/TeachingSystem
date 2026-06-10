@@ -17,6 +17,8 @@ public:
     explicit HomePage(QWidget *parent = nullptr);
     ~HomePage();
 
+    void loadStatistics();
+
 private slots:
     void on_AddStudentsquickBtn_clicked();
 

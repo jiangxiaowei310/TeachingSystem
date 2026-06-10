@@ -15,22 +15,15 @@ CollegePage::CollegePage(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    // 初始化 TableView 模型
-    model = new QSqlRelationalTableModel(this);
-    model->setTable("colleges");
-    model->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    model = new QSqlQueryModel(this);
 
-    // 设置列标题
-    model->setHeaderData(model->fieldIndex("college_id"), Qt::Horizontal, "学院ID");
-    model->setHeaderData(model->fieldIndex("college_name"), Qt::Horizontal, "学院名称");
-    model->setHeaderData(model->fieldIndex("college_code"), Qt::Horizontal, "学院代码");
-    model->setHeaderData(model->fieldIndex("dean"), Qt::Horizontal, "院长");
-    model->setHeaderData(model->fieldIndex("phone"), Qt::Horizontal, "联系电话");
+    currentPage = 1;
+    pageSize = 20;
 
-    // 默认加载所有学院
+    totalRecords = 0;
+    totalPages = 0;
+
     loadColleges();
-
-    ui->tableView->setModel(model);
 }
 
 CollegePage::~CollegePage()
@@ -40,9 +33,72 @@ CollegePage::~CollegePage()
 
 void CollegePage::loadColleges()
 {
-    model->setFilter("");
-    model->select();
+    QSqlQuery countQuery;
+
+    countQuery.exec(
+        "SELECT COUNT(*) FROM colleges");
+
+    if(countQuery.next())
+    {
+        totalRecords =
+            countQuery.value(0).toInt();
+    }
+
+    totalPages =
+        (totalRecords + pageSize - 1)
+        / pageSize;
+
+    if(totalPages == 0)
+        totalPages = 1;
+
+    if(currentPage > totalPages)
+        currentPage = totalPages;
+
+    if(currentPage < 1)
+        currentPage = 1;
+
+    int offset =
+        (currentPage - 1) * pageSize;
+
+    QSqlQuery query;
+
+    query.prepare(R"(
+        SELECT
+            college_id,
+            college_name
+        FROM colleges
+        LIMIT :offset,:size
+    )");
+
+    query.bindValue(":offset",offset);
+    query.bindValue(":size",pageSize);
+
+    query.exec();
+
+    model->setQuery(std::move(query));
+
+    model->setHeaderData(
+        0,
+        Qt::Horizontal,
+        "学院ID");
+
+    model->setHeaderData(
+        1,
+        Qt::Horizontal,
+        "学院名称");
+
+    ui->tableView->setModel(model);
+
+    ui->totalLabel->setText(
+        QString("共 %1 条")
+            .arg(totalRecords));
+
+    ui->pageLabel->setText(
+        QString("%1 / %2")
+            .arg(currentPage)
+            .arg(totalPages));
 }
+
 
 void CollegePage::on_addBtn_clicked()
 {
@@ -80,7 +136,7 @@ void CollegePage::on_editBtn_clicked()
     }
 
     int collegeId = model->data(model->index(row, 0)).toInt();
-    QString collegeName = model->data(model->index(row, model->fieldIndex("college_name"))).toString();
+    QString collegeName =model->data(model->index(row,1)).toString();
 
     AddCollegeDialog dialog(this);
     dialog.setCollegeData(collegeId, collegeName, "", "", "");
@@ -119,7 +175,7 @@ void CollegePage::on_deleteBtn_clicked()
     }
 
     int collegeId = model->data(model->index(row, 0)).toInt();
-    QString collegeName = model->data(model->index(row, model->fieldIndex("college_name"))).toString();
+    QString collegeName =model->data(model->index(row,1)).toString();
 
     if (QMessageBox::question(this, "确认删除", QString("确定要删除学院 %1 吗？").arg(collegeName)) != QMessageBox::Yes) {
         return;
@@ -139,29 +195,43 @@ void CollegePage::on_deleteBtn_clicked()
 
 void CollegePage::on_searchBtn_clicked()
 {
-    QString key = ui->searchEdit->text().trimmed();
-    if (key.isEmpty()) {
+    QString key =
+        ui->searchEdit->text().trimmed();
+
+    if(key.isEmpty())
+    {
         loadColleges();
-        ui->tableView->setModel(model);
         return;
     }
-    
+
     QSqlQuery query;
-    query.prepare("SELECT * FROM colleges WHERE college_name LIKE ?");
-    query.addBindValue("%" + key + "%");
-    
-    if (query.exec()) {
-        QSqlQueryModel *tempModel = new QSqlQueryModel(this);
-        tempModel->setQuery(query);
-        
-        tempModel->setHeaderData(0, Qt::Horizontal, "学院ID");
-        tempModel->setHeaderData(1, Qt::Horizontal, "学院名称");
-        tempModel->setHeaderData(2, Qt::Horizontal, "学院代码");
-        tempModel->setHeaderData(3, Qt::Horizontal, "院长");
-        tempModel->setHeaderData(4, Qt::Horizontal, "联系电话");
-        
-        ui->tableView->setModel(tempModel);
-    } else {
-        QMessageBox::critical(this, "错误", "搜索失败：" + query.lastError().text());
-    }
+
+    query.prepare(R"(
+        SELECT
+            college_id,
+            college_name
+        FROM colleges
+        WHERE college_name LIKE :key
+    )");
+
+    query.bindValue(
+        ":key",
+        "%" + key + "%");
+
+    query.exec();
+
+    model->setQuery(std::move(query));
+
+    model->setHeaderData(
+        0,
+        Qt::Horizontal,
+        "学院ID");
+
+    model->setHeaderData(
+        1,
+        Qt::Horizontal,
+        "学院名称");
+
+    ui->tableView->setModel(model);
 }
+

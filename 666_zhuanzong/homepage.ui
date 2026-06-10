@@ -239,7 +239,7 @@ QLabel {
            <string notr="true">font-size: 32px;</string>
           </property>
           <property name="text">
-           <string>学校️</string>
+           <string>学院</string>
           </property>
          </widget>
         </item>
@@ -431,7 +431,7 @@ QPushButton:hover {
            </widget>
           </item>
           <item row="1" column="0">
-           <widget class="QPushButton" name="quickBtn3">
+           <widget class="QPushButton" name="DataStatisticsBtn">
             <property name="styleSheet">
              <string notr="true">QPushButton {
     background: #ed8936;

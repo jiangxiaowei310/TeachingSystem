@@ -98,6 +98,36 @@ QTableView::header {
        </widget>
       </item>
       <item>
+       <widget class="QPushButton" name="addBtn">
+        <property name="styleSheet">
+         <string notr="true">background: #48bb78; color: white;</string>
+        </property>
+        <property name="text">
+         <string>添加学生</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="editBtn">
+        <property name="styleSheet">
+         <string notr="true">background: #ed8936; color: white;</string>
+        </property>
+        <property name="text">
+         <string>编辑学生</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="deleteBtn">
+        <property name="styleSheet">
+         <string notr="true">background: #fc8181; color: white;</string>
+        </property>
+        <property name="text">
+         <string>删除学生</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="exportBtn">
         <property name="styleSheet">
          <string notr="true">background: #4299e1; color: white;</string>

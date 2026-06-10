@@ -31,6 +31,7 @@ private:
 
     QList<QStringList> readFile(const QString &path);//通用文件读取（预留，本项目不用）
     QList<QStringList> readCsv(const QString &path);// 读取 CSV 文件核心函数， path CSV 文件路径，
+    QStringList parseCsvLine(const QString &line);// 解析CSV单行数据
     //return 二维列表，每一行是一个字符串列表
     //QList<QStringList> readExcel(const QString &path);
 };

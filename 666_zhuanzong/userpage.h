@@ -1,8 +1,8 @@
 #ifndef USERPAGE_H
 #define USERPAGE_H
 
+#include <QSqlQueryModel>
 #include <QWidget>
-#include <QSqlRelationalTableModel>
 
 namespace Ui {
 class UserPage;
@@ -25,7 +25,12 @@ private slots:
 
 private:
     Ui::UserPage *ui;
-    QSqlRelationalTableModel *model;
+    QSqlQueryModel *model;
+
+    int currentPage;
+    int pageSize;
+    int totalRecords;
+    int totalPages;
 
     void loadUsers();
 };

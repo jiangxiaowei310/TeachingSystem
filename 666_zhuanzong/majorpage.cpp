@@ -23,15 +23,13 @@ MajorPage::MajorPage(QWidget *parent) :
     // 设置关系（显示学院名称而不是ID）
     model->setRelation(model->fieldIndex("college_id"), QSqlRelation("colleges", "college_id", "college_name"));
 
-    // 设置列标题
+    // 设置列标题（只使用数据库中存在的字段）
     model->setHeaderData(model->fieldIndex("major_id"), Qt::Horizontal, "专业ID");
     model->setHeaderData(model->fieldIndex("major_name"), Qt::Horizontal, "专业名称");
-    model->setHeaderData(model->fieldIndex("major_code"), Qt::Horizontal, "专业代码");
     model->setHeaderData(model->fieldIndex("college_id"), Qt::Horizontal, "所属学院");
 
-    // 默认加载所有专业
-    loadMajors();
-
+    // 加载数据并设置模型
+    model->select();
     ui->tableView->setModel(model);
 }
 
@@ -44,6 +42,7 @@ void MajorPage::loadMajors()
 {
     model->setFilter("");
     model->select();
+    ui->tableView->setModel(model);
 }
 
 void MajorPage::on_addBtn_clicked()
@@ -126,28 +125,64 @@ void MajorPage::on_editBtn_clicked()
 
 void MajorPage::on_deleteBtn_clicked()
 {
-    int row = ui->tableView->currentIndex().row();
-    if (row < 0) {
-        QMessageBox::warning(this, "提示", "请选择一行");
+    int row =
+        ui->tableView->currentIndex().row();
+
+    if(row < 0)
+    {
+        QMessageBox::warning(
+            this,
+            "提示",
+            "请选择一行");
         return;
     }
 
-    int majorId = model->data(model->index(row, 0)).toInt();
-    QString majorName = model->data(model->index(row, model->fieldIndex("major_name"))).toString();
+    int majorId =
+        model->data(
+                 model->index(row,0))
+            .toInt();
 
-    if (QMessageBox::question(this, "确认删除", QString("确定要删除专业 %1 吗？").arg(majorName)) != QMessageBox::Yes) {
+    QString majorName =
+        model->data(
+                 model->index(row,1))
+            .toString();
+
+    int ret =
+        QMessageBox::question(
+            this,
+            "确认删除",
+            QString("确定删除专业【%1】吗？")
+                .arg(majorName),
+            QMessageBox::Yes |
+                QMessageBox::No);
+
+    if(ret != QMessageBox::Yes)
         return;
-    }
 
     QSqlQuery query;
-    query.prepare("DELETE FROM majors WHERE major_id = ?");
+
+    query.prepare(
+        "DELETE FROM majors "
+        "WHERE major_id = ?");
+
     query.addBindValue(majorId);
 
-    if (query.exec()) {
-        QMessageBox::information(this, "成功", "删除成功！");
+    if(query.exec())
+    {
+        QMessageBox::information(
+            this,
+            "成功",
+            "专业删除成功！");
+
         loadMajors();
-    } else {
-        QMessageBox::critical(this, "错误", "删除失败：" + query.lastError().text());
+    }
+    else
+    {
+        QMessageBox::critical(
+            this,
+            "错误",
+            "删除失败：\n"
+                + query.lastError().text());
     }
 }
 

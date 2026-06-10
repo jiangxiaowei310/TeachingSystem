@@ -8,8 +8,10 @@
 #include <QSqlError>
 #include <QSqlTableModel>
 #include <QSqlRelationalTableModel>
+#include <QSqlQueryModel>
 #include <QFile>
 #include <QTextStream>
+#include <QSqlRecord>
 
 StudentPage::StudentPage(QWidget *parent) :
     QWidget(parent),
@@ -27,8 +29,8 @@ StudentPage::StudentPage(QWidget *parent) :
     model->setRelation(model->fieldIndex("major_id"), QSqlRelation("majors", "major_id", "major_name"));
     model->setRelation(model->fieldIndex("class_id"), QSqlRelation("classes", "class_id", "class_name"));
 
-    model->select();
-    ui->tableView->setModel(model);
+    loadStudents();
+
 }
 
 StudentPage::~StudentPage()
@@ -41,6 +43,29 @@ void StudentPage::loadStudents()
 {
     model->setFilter("");
     model->select();
+
+    ui->tableView->setModel(model);
+
+    // 查询学生总数
+    QSqlQuery query;
+
+    query.exec(
+        "SELECT COUNT(*) FROM students"
+        );
+
+    if(query.next())
+    {
+        int total =
+            query.value(0).toInt();
+
+        ui->totalLabel->setText(
+            QString("共 %1 条")
+                .arg(total)
+            );
+    }
+
+    // 暂时显示第一页
+    ui->pageLabel->setText("1 / 1");
 }
 
 // 添加学生
@@ -198,38 +223,102 @@ void StudentPage::on_editBtn_clicked()
 void StudentPage::on_deleteBtn_clicked()
 {
     int row = ui->tableView->currentIndex().row();
-    if (row < 0) {
-        QMessageBox::warning(this, "提示", "请选择一行");
+
+    if(row < 0)
+    {
+        QMessageBox::warning(this,"提示","请选择一名学生");
         return;
     }
 
-    int userId = model->data(model->index(row, 0)).toInt();
+    int userId = model->record(row)
+                     .value("user_id")
+                     .toInt();
+
+    QString name = model->record(row)
+                       .value("name")
+                       .toString();
+
+    if(QMessageBox::question(
+            this,
+            "确认删除",
+            QString("确定删除学生【%1】吗？").arg(name))
+        != QMessageBox::Yes)
+    {
+        return;
+    }
+
     QSqlDatabase db = QSqlDatabase::database();
+
     db.transaction();
 
     QSqlQuery q;
-    q.prepare("DELETE FROM students WHERE user_id = ?");
-    q.addBindValue(userId);
-    q.exec();
 
-    q.prepare("DELETE FROM users WHERE id = ?");
+    q.prepare("DELETE FROM students WHERE user_id=?");
     q.addBindValue(userId);
-    q.exec();
+
+    if(!q.exec())
+    {
+        db.rollback();
+
+        QMessageBox::critical(
+            this,
+            "删除失败",
+            q.lastError().text());
+
+        return;
+    }
+
+    q.prepare("DELETE FROM users WHERE id=?");
+    q.addBindValue(userId);
+
+    if(!q.exec())
+    {
+        db.rollback();
+
+        QMessageBox::critical(
+            this,
+            "删除失败",
+            q.lastError().text());
+
+        return;
+    }
 
     db.commit();
+
+    QMessageBox::information(
+        this,
+        "成功",
+        "学生删除成功");
+
     loadStudents();
 }
 
 // 搜索
 void StudentPage::on_searchBtn_clicked()
 {
-    QString key = ui->searchEdit->text();
-    if (key.isEmpty()) {
+    QString key =
+        ui->searchEdit->text();
+
+    if(key.isEmpty())
+    {
         loadStudents();
         return;
     }
-    model->setFilter(QString("name like '%%1%' or stu_no like '%%1%'").arg(key));
+
+    model->setFilter(
+        QString(
+            "name like '%%1%' OR stu_no like '%%1%'"
+            ).arg(key)
+        );
+
     model->select();
+
+    ui->totalLabel->setText(
+        QString("共 %1 条")
+            .arg(model->rowCount())
+        );
+
+    ui->pageLabel->setText("1 / 1");
 }
 
 // 获取学院ID

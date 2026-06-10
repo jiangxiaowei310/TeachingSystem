@@ -15,24 +15,19 @@ UserPage::UserPage(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    // 初始化 TableView 模型
-    model = new QSqlRelationalTableModel(this);
-    model->setTable("users");
-    model->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    model = new QSqlQueryModel(this);
 
-    // 设置列标题
-    model->setHeaderData(model->fieldIndex("id"), Qt::Horizontal, "ID");
-    model->setHeaderData(model->fieldIndex("username"), Qt::Horizontal, "用户名");
-    model->setHeaderData(model->fieldIndex("role"), Qt::Horizontal, "角色");
-    model->setHeaderData(model->fieldIndex("create_time"), Qt::Horizontal, "创建时间");
+    currentPage = 1;
+    pageSize = 20;
+    totalRecords = 0;
+    totalPages = 0;
 
-    // 隐藏密码列
-    ui->tableView->setColumnHidden(model->fieldIndex("password"), true);
+    ui->pageSizeCombo->addItem("10");
+    ui->pageSizeCombo->addItem("20");
+    ui->pageSizeCombo->addItem("50");
+    ui->pageSizeCombo->addItem("100");
 
-    // 默认加载所有用户
     loadUsers();
-
-    ui->tableView->setModel(model);
 }
 
 UserPage::~UserPage()
@@ -42,8 +37,82 @@ UserPage::~UserPage()
 
 void UserPage::loadUsers()
 {
-    model->setFilter("");
-    model->select();
+    QSqlQuery countQuery;
+
+    countQuery.exec(
+        "SELECT COUNT(*) FROM users");
+
+    if(countQuery.next())
+    {
+        totalRecords =
+            countQuery.value(0).toInt();
+    }
+
+    totalPages =
+        (totalRecords + pageSize - 1)
+        / pageSize;
+
+    if(totalPages == 0)
+        totalPages = 1;
+
+    if(currentPage > totalPages)
+        currentPage = totalPages;
+
+    if(currentPage < 1)
+        currentPage = 1;
+
+    int offset =
+        (currentPage - 1) * pageSize;
+
+    QSqlQuery query;
+
+    query.prepare(R"(
+        SELECT
+            id,
+            username,
+            role,
+            create_time
+        FROM users
+        LIMIT :offset,:size
+    )");
+
+    query.bindValue(":offset", offset);
+    query.bindValue(":size", pageSize);
+
+    query.exec();
+
+    model->setQuery(std::move(query));
+
+    model->setHeaderData(
+        0,
+        Qt::Horizontal,
+        "ID");
+
+    model->setHeaderData(
+        1,
+        Qt::Horizontal,
+        "用户名");
+
+    model->setHeaderData(
+        2,
+        Qt::Horizontal,
+        "角色");
+
+    model->setHeaderData(
+        3,
+        Qt::Horizontal,
+        "创建时间");
+
+    ui->tableView->setModel(model);
+
+    ui->totalLabel->setText(
+        QString("共 %1 条")
+            .arg(totalRecords));
+
+    ui->pageLabel->setText(
+        QString("%1 / %2")
+            .arg(currentPage)
+            .arg(totalPages));
 }
 
 void UserPage::on_addBtn_clicked()
@@ -89,9 +158,14 @@ void UserPage::on_editBtn_clicked()
         return;
     }
 
-    int userId = model->data(model->index(row, 0)).toInt();
-    QString username = model->data(model->index(row, model->fieldIndex("username"))).toString();
-    QString role = model->data(model->index(row, model->fieldIndex("role"))).toString();
+    int userId =
+        model->data(model->index(row,0)).toInt();
+
+    QString username =
+        model->data(model->index(row,1)).toString();
+
+    QString role =
+        model->data(model->index(row,2)).toString();
 
     // 获取密码
     QString password = "";
@@ -145,9 +219,11 @@ void UserPage::on_deleteBtn_clicked()
         return;
     }
 
-    int userId = model->data(model->index(row, 0)).toInt();
-    QString username = model->data(model->index(row, model->fieldIndex("username"))).toString();
+    int userId =
+        model->data(model->index(row,0)).toInt();
 
+    QString username =
+        model->data(model->index(row,1)).toString();
     if (QMessageBox::question(this, "确认删除", QString("确定要删除用户 %1 吗？").arg(username)) != QMessageBox::Yes) {
         return;
     }
@@ -166,30 +242,56 @@ void UserPage::on_deleteBtn_clicked()
 
 void UserPage::on_searchBtn_clicked()
 {
-    QString key = ui->searchEdit->text().trimmed();
-    if (key.isEmpty()) {
+    QString key =
+        ui->searchEdit->text().trimmed();
+
+    if(key.isEmpty())
+    {
         loadUsers();
-        ui->tableView->setModel(model);
         return;
     }
-    
+
     QSqlQuery query;
-    query.prepare("SELECT id, username, role, create_time FROM users WHERE username LIKE ?");
-    query.addBindValue("%" + key + "%");
-    
-    if (query.exec()) {
-        QSqlQueryModel *tempModel = new QSqlQueryModel(this);
-        tempModel->setQuery(query);
-        
-        tempModel->setHeaderData(0, Qt::Horizontal, "ID");
-        tempModel->setHeaderData(1, Qt::Horizontal, "用户名");
-        tempModel->setHeaderData(2, Qt::Horizontal, "角色");
-        tempModel->setHeaderData(3, Qt::Horizontal, "创建时间");
-        
-        ui->tableView->setModel(tempModel);
-    } else {
-        QMessageBox::critical(this, "错误", "搜索失败：" + query.lastError().text());
-    }
+
+    query.prepare(R"(
+        SELECT
+            id,
+            username,
+            role,
+            create_time
+        FROM users
+        WHERE username LIKE :key
+    )");
+
+    query.bindValue(
+        ":key",
+        "%" + key + "%");
+
+    query.exec();
+
+    model->setQuery(std::move(query));
+
+    model->setHeaderData(
+        0,
+        Qt::Horizontal,
+        "ID");
+
+    model->setHeaderData(
+        1,
+        Qt::Horizontal,
+        "用户名");
+
+    model->setHeaderData(
+        2,
+        Qt::Horizontal,
+        "角色");
+
+    model->setHeaderData(
+        3,
+        Qt::Horizontal,
+        "创建时间");
+
+    ui->tableView->setModel(model);
 }
 
 void UserPage::on_resetPwdBtn_clicked()
@@ -200,8 +302,11 @@ void UserPage::on_resetPwdBtn_clicked()
         return;
     }
 
-    int userId = model->data(model->index(row, 0)).toInt();
-    QString username = model->data(model->index(row, model->fieldIndex("username"))).toString();
+    int userId =
+        model->data(model->index(row,0)).toInt();
+
+    QString username =
+        model->data(model->index(row,1)).toString();
 
     if (QMessageBox::question(this, "确认重置密码", QString("确定要将用户 %1 的密码重置为默认密码 123456 吗？").arg(username)) != QMessageBox::Yes) {
         return;

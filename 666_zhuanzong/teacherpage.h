@@ -1,9 +1,10 @@
 #ifndef TEACHERPAGE_H
 #define TEACHERPAGE_H
 
+#include <QSqlQueryModel>
 #include <QWidget>
 
-class QSqlRelationalTableModel;
+class QSqlQueryModel;
 
 namespace Ui {
 class TeacherPage;
@@ -25,7 +26,12 @@ private slots:
 
 private:
     Ui::TeacherPage *ui;
-    QSqlRelationalTableModel *model;
+    QSqlQueryModel *model;
+
+    int currentPage;
+    int pageSize;
+    int totalRecords;
+    int totalPages;
 
     void loadTeachers();
 };

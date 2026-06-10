@@ -4,177 +4,241 @@
 #include <QMessageBox>
 #include <QFile>
 #include <QTextStream>
-#include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
-#include <QList>
+#include <QDebug>
 
 BatchImportDialog::BatchImportDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::BatchImportDialog)
 {
     ui->setupUi(this);
-    setWindowTitle("批量导入学生（CSV）");
+    this->setWindowTitle("批量导入学生");
 }
 
 BatchImportDialog::~BatchImportDialog()
 {
     delete ui;
 }
-// 获取文件路径
-QString BatchImportDialog::getFilePath() const { return m_filePath; }
 
-// 只选择 CSV 文件
+QString BatchImportDialog::getFilePath() const
+{
+    return m_filePath;
+}
+
 void BatchImportDialog::on_browseBtn_clicked()
 {
-    QString filter = "CSV文件 (*.csv)";
-    QString filePath = QFileDialog::getOpenFileName(this, "选择CSV文件", "", filter);
+    QString filePath = QFileDialog::getOpenFileName(this, "选择CSV文件", "", "CSV文件 (*.csv)");
     if (!filePath.isEmpty()) {
         m_filePath = filePath;
-        ui->fileEdit->setText(filePath);// 把路径显示到界面
+        ui->fileEdit->setText(filePath);
     }
 }
 
-// 只读取 CSV
-QList<QStringList> BatchImportDialog::readCsv(const QString &path)
-{
-    QList<QStringList> list;
-    QFile file(path);
-    // 打开失败直接返回空列表
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) return list;
-
-    QTextStream s(&file);
-    s.setEncoding(QStringConverter::Utf8);// UTF-8 编码，支持中文
-    bool first = true;
-    while (!s.atEnd()) {
-        QString line = s.readLine().trimmed();
-        if (line.isEmpty()) continue;
-        if (first) { first = false; continue; } // 跳过表头
-        list.append(line.split(","));// 按逗号分割，存入列表
-    }
-    file.close();
-    return list;
-}
-
-// ==================== 导入主逻辑 ====================
 void BatchImportDialog::on_okBtn_clicked()
 {
-    // 1. 校验是否选择文件
     if (m_filePath.isEmpty()) {
-        QMessageBox::warning(this, "提示", "请选择文件");
+        QMessageBox::warning(this, "警告", "请先选择CSV文件！");
         return;
     }
 
-    // 2. 读取文件数据
-    auto data = readCsv(m_filePath);
+    QList<QStringList> data = readCsv(m_filePath);
     if (data.isEmpty()) {
-        QMessageBox::warning(this, "错误", "文件无数据");
+        QMessageBox::warning(this, "警告", "CSV文件内容为空！");
         return;
     }
 
-    // 3. 获取数据库连接
+    // 开始导入
     QSqlDatabase db = QSqlDatabase::database();
     if (!db.isOpen()) {
-        QMessageBox::warning(this, "数据库", "未连接");
+        QMessageBox::critical(this, "错误", "数据库连接失败！");
         return;
     }
 
-    // 4. 开启事务：要么全部成功，要么全部失败
+    // 开启事务
     db.transaction();
-    QSqlQuery q(db);
-    // 5. 遍历每一行数据导入
-    for (int i = 0; i < data.size(); ++i) {
-        QStringList r = data[i];
-        if (r.size() < 9) continue;
-        // 按列取值并去空格
-        QString stuNo    = r[0].trimmed();
-        QString name     = r[1].trimmed();
-        QString gender   = r[2].trimmed();
-        QString college  = r[3].trimmed();
-        QString major    = r[4].trimmed();
-        QString clsName  = r[5].trimmed();
-        QString grade    = r[6].trimmed();
-        QString phone    = r[7].trimmed();
-        QString email    = r[8].trimmed();
+
+    int successCount = 0;
+    int failCount = 0;
+
+    // 跳过表头，从第二行开始
+    for (int i = 1; i < data.size(); ++i) {
+        QStringList row = data[i];
+        if (row.size() < 9) continue; // 至少需要9个字段
+
+        QString stuNo = row[0].trimmed();
+        QString name = row[1].trimmed();
+        QString gender = row[2].trimmed();
+        QString collegeName = row[3].trimmed();
+        QString majorName = row[4].trimmed();
+        QString className = row[5].trimmed();
+        QString grade = row[6].trimmed();
+        QString phone = row[7].trimmed();
+        QString email = row[8].trimmed();
 
         if (stuNo.isEmpty() || name.isEmpty()) continue;
 
-        // 1. 学院
-        int cid = 0;
-        q.prepare("SELECT college_id FROM colleges WHERE college_name=?");
-        q.addBindValue(college); q.exec();
-        if (q.next()) cid = q.value(0).toInt();
-        else {
-            q.prepare("INSERT INTO colleges(college_name) VALUES(?)");
-            q.addBindValue(college); q.exec();
-            cid = q.lastInsertId().toInt();
+        // 获取或创建学院ID
+        int collegeId = -1;
+        QSqlQuery query;
+        query.prepare("SELECT college_id FROM colleges WHERE college_name = ?");
+        query.addBindValue(collegeName);
+        if (query.exec() && query.next()) {
+            collegeId = query.value(0).toInt();
+        } else {
+            // 创建学院
+            query.prepare("INSERT INTO colleges (college_name) VALUES (?)");
+            query.addBindValue(collegeName);
+            if (query.exec()) {
+                collegeId = query.lastInsertId().toInt();
+            } else {
+                failCount++;
+                continue;
+            }
         }
 
-        // 2. 专业
-        int mid = 0;
-        q.prepare("SELECT major_id FROM majors WHERE major_name=? AND college_id=?");
-        q.addBindValue(major); q.addBindValue(cid); q.exec();
-        if (q.next()) mid = q.value(0).toInt();
-        else {
-            q.prepare("INSERT INTO majors(major_name,college_id) VALUES(?,?)");
-            q.addBindValue(major); q.addBindValue(cid); q.exec();
-            mid = q.lastInsertId().toInt();
+        // 获取或创建专业ID
+        int majorId = -1;
+        query.prepare("SELECT major_id FROM majors WHERE major_name = ? AND college_id = ?");
+        query.addBindValue(majorName);
+        query.addBindValue(collegeId);
+        if (query.exec() && query.next()) {
+            majorId = query.value(0).toInt();
+        } else {
+            // 创建专业
+            query.prepare("INSERT INTO majors (major_name, college_id) VALUES (?, ?)");
+            query.addBindValue(majorName);
+            query.addBindValue(collegeId);
+            if (query.exec()) {
+                majorId = query.lastInsertId().toInt();
+            } else {
+                failCount++;
+                continue;
+            }
         }
 
-        // 3. 班级
-        int clsid = 0;
-        q.prepare("SELECT class_id FROM classes WHERE class_name=? AND grade=? AND major_id=?");
-        q.addBindValue(clsName); q.addBindValue(grade); q.addBindValue(mid); q.exec();
-        if (q.next()) clsid = q.value(0).toInt();
-        else {
-            q.prepare("INSERT INTO classes(class_name,grade,major_id,college_id) VALUES(?,?,?,?)");
-            q.addBindValue(clsName); q.addBindValue(grade); q.addBindValue(mid); q.addBindValue(cid);
-            q.exec();
-            clsid = q.lastInsertId().toInt();
+        // 获取或创建班级ID
+        int classId = -1;
+        query.prepare("SELECT class_id FROM classes WHERE class_name = ? AND major_id = ?");
+        query.addBindValue(className);
+        query.addBindValue(majorId);
+        if (query.exec() && query.next()) {
+            classId = query.value(0).toInt();
+        } else {
+            // 创建班级
+            query.prepare("INSERT INTO classes (class_name, grade, college_id, major_id) VALUES (?, ?, ?, ?)");
+            query.addBindValue(className);
+            query.addBindValue(grade);
+            query.addBindValue(collegeId);
+            query.addBindValue(majorId);
+            if (query.exec()) {
+                classId = query.lastInsertId().toInt();
+            } else {
+                failCount++;
+                continue;
+            }
         }
 
-        // 4. 学号重复判断
-        q.prepare("SELECT 1 FROM students WHERE stu_no=?");
-        q.addBindValue(stuNo); q.exec();
-        if (q.next()) {
-            db.rollback();
-            QMessageBox::warning(this, "导入失败",
-                                 QString("第 %1 行：学号 %2 已存在！").arg(i + 1).arg(stuNo));
-            return;
+        // 创建用户
+        QString username = stuNo;
+        QString password = "123456";
+        query.prepare("INSERT INTO users (username, password, role) VALUES (?, ?, 'student')");
+        query.addBindValue(username);
+        query.addBindValue(password);
+        if (!query.exec()) {
+            failCount++;
+            continue;
         }
+        int userId = query.lastInsertId().toInt();
 
-        // 5. 插入学生
-        q.prepare("INSERT INTO students(stu_no,name,gender,college_id,major_id,class_id,grade,phone,email) "
-                  "VALUES(?,?,?,?,?,?,?,?,?)");
-        q.addBindValue(stuNo);
-        q.addBindValue(name);
-        q.addBindValue(gender);
-        q.addBindValue(cid);
-        q.addBindValue(mid);
-        q.addBindValue(clsid);
-        q.addBindValue(grade);
-        q.addBindValue(phone);
-        q.addBindValue(email);
+        // 创建学生
+        query.prepare("INSERT INTO students (user_id, stu_no, name, gender, college_id, major_id, class_id, grade, phone, email) "
+                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        query.addBindValue(userId);
+        query.addBindValue(stuNo);
+        query.addBindValue(name);
+        query.addBindValue(gender);
+        query.addBindValue(collegeId);
+        query.addBindValue(majorId);
+        query.addBindValue(classId);
+        query.addBindValue(grade);
+        query.addBindValue(phone);
+        query.addBindValue(email);
 
-        if (!q.exec()) {
-            db.rollback();
-            QMessageBox::warning(this, "错误", q.lastError().text());
-            return;
+        if (query.exec()) {
+            successCount++;
+        } else {
+            failCount++;
         }
     }
 
-    // 所有数据导入成功，提交事务
-    db.commit();
-    QMessageBox::information(this, "成功", "导入完成！");
-    accept();
+    if (failCount == 0) {
+        db.commit();
+        QMessageBox::information(this, "成功", QString("导入成功！共导入 %1 条记录").arg(successCount));
+        accept();
+    } else {
+        db.rollback();
+        QMessageBox::warning(this, "部分失败", QString("导入完成！成功 %1 条，失败 %2 条").arg(successCount).arg(failCount));
+        accept();
+    }
 }
-//关闭窗口
+
 void BatchImportDialog::on_cancelBtn_clicked()
 {
     reject();
 }
-//通用文件读取
+
 QList<QStringList> BatchImportDialog::readFile(const QString &path)
 {
+    Q_UNUSED(path);
     return QList<QStringList>();
+}
+
+QList<QStringList> BatchImportDialog::readCsv(const QString &path)
+{
+    QList<QStringList> result;
+    QFile file(path);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QMessageBox::warning(this, "错误", "无法打开文件！");
+        return result;
+    }
+
+    QTextStream in(&file);
+    while (!in.atEnd()) {
+        QString line = in.readLine();
+        QStringList fields = parseCsvLine(line);
+        result.append(fields);
+    }
+
+    file.close();
+    return result;
+}
+
+QStringList BatchImportDialog::parseCsvLine(const QString &line)
+{
+    QStringList fields;
+    QString currentField;
+    bool inQuotes = false;
+
+    for (int i = 0; i < line.size(); ++i) {
+        QChar c = line[i];
+
+        if (c == '"') {
+            if (inQuotes && i + 1 < line.size() && line[i + 1] == '"') {
+                // 处理双引号转义
+                currentField += '"';
+                i++;
+            } else {
+                inQuotes = !inQuotes;
+            }
+        } else if (c == ',' && !inQuotes) {
+            fields.append(currentField);
+            currentField.clear();
+        } else {
+            currentField += c;
+        }
+    }
+    fields.append(currentField);
+
+    return fields;
 }
