@@ -1,0 +1,3 @@
+set(__QT_DEPLOY_TARGET_666_zhuanzong_FILE D:/qt 2302/666_zhuanzong/build_mingw/666_zhuanzong.exe)
+set(__QT_DEPLOY_TARGET_666_zhuanzong_TYPE EXECUTABLE)
+set(__QT_DEPLOY_TARGET_666_zhuanzong_RUNTIME_DLLS C:/qtqt/6.10.2/mingw_64/bin/Qt6Sql.dll;C:/qtqt/6.10.2/mingw_64/bin/Qt6Charts.dll;C:/qtqt/6.10.2/mingw_64/bin/Qt6OpenGLWidgets.dll;C:/qtqt/6.10.2/mingw_64/bin/Qt6Widgets.dll;C:/qtqt/6.10.2/mingw_64/bin/Qt6OpenGL.dll;C:/qtqt/6.10.2/mingw_64/bin/Qt6Gui.dll;C:/qtqt/6.10.2/mingw_64/bin/Qt6Core.dll)

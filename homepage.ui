@@ -1,0 +1,484 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>HomePage</class>
+ <widget class="QWidget" name="HomePage">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1000</width>
+    <height>650</height>
+   </rect>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QWidget {
+    background: #f7fafc;
+}
+QFrame {
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+QLabel {
+    color: #4a5568;
+}
+</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QFrame" name="headerFrame">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QLabel" name="welcomeLabel">
+        <property name="styleSheet">
+         <string notr="true">font-size: 24px; font-weight: bold; color: #1a202c;</string>
+        </property>
+        <property name="text">
+         <string>欢迎使用学生管理系统</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Orientation::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QLabel" name="userLabel">
+        <property name="styleSheet">
+         <string notr="true">font-size: 14px; color: #718096;</string>
+        </property>
+        <property name="text">
+         <string>管理员：admin</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QFrame" name="studentCountFrame">
+       <property name="styleSheet">
+        <string notr="true">QFrame {
+        background-color: qlineargradient(
+            x1:0, y1:0,
+            x2:1, y2:1,
+            stop:0 #667eea,
+            stop:1 #764ba2
+        );
+        border: none;
+    }
+    QLabel {
+        color: white;
+    }</string>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <widget class="QLabel" name="studentIcon">
+          <property name="styleSheet">
+           <string notr="true">font-size: 32px;</string>
+          </property>
+          <property name="text">
+           <string>学生</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="studentCount">
+          <property name="styleSheet">
+           <string notr="true">font-size: 28px; font-weight: bold;</string>
+          </property>
+          <property name="text">
+           <string>1,286</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="studentLabel">
+          <property name="styleSheet">
+           <string notr="true">font-size: 14px; opacity: 0.9;</string>
+          </property>
+          <property name="text">
+           <string>学生总数</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QFrame" name="teacherCountFrame">
+       <property name="styleSheet">
+        <string notr="true">QFrame {
+        background-color: qlineargradient(
+            x1:0, y1:0,
+            x2:1, y2:1,
+            stop:0 #f093fb,
+            stop:1 #f5576c
+        );
+    border: none;
+}
+QLabel {
+    color: white;
+}</string>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <item>
+         <widget class="QLabel" name="teacherIcon">
+          <property name="styleSheet">
+           <string notr="true">font-size: 32px;</string>
+          </property>
+          <property name="text">
+           <string>教师</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="teacherCount">
+          <property name="styleSheet">
+           <string notr="true">font-size: 28px; font-weight: bold;</string>
+          </property>
+          <property name="text">
+           <string>320</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="teacherLabel">
+          <property name="styleSheet">
+           <string notr="true">font-size: 14px; opacity: 0.9;</string>
+          </property>
+          <property name="text">
+           <string>教师总数</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QFrame" name="classCountFrame">
+       <property name="styleSheet">
+        <string notr="true">QFrame {
+        background-color: qlineargradient(
+            x1:0, y1:0,
+            x2:1, y2:1,
+            stop:0 #4facfe,
+            stop:1 #00f2fe
+        );
+    border: none;
+}
+QLabel {
+    color: white;
+}</string>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_4">
+        <item>
+         <widget class="QLabel" name="classIcon">
+          <property name="styleSheet">
+           <string notr="true">font-size: 32px;</string>
+          </property>
+          <property name="text">
+           <string>班级</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="classCount">
+          <property name="styleSheet">
+           <string notr="true">font-size: 28px; font-weight: bold;</string>
+          </property>
+          <property name="text">
+           <string>48</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="classLabel">
+          <property name="styleSheet">
+           <string notr="true">font-size: 14px; opacity: 0.9;</string>
+          </property>
+          <property name="text">
+           <string>班级总数</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QFrame" name="collegeCountFrame">
+       <property name="styleSheet">
+        <string notr="true">QFrame {
+        background-color: qlineargradient(
+            x1:0, y1:0,
+            x2:1, y2:1,
+            stop:0 #43e97b,
+            stop:1 #38f9d7
+        );
+    border: none;
+}
+QLabel {
+    color: white;
+}</string>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_5">
+        <item>
+         <widget class="QLabel" name="collegeIcon">
+          <property name="styleSheet">
+           <string notr="true">font-size: 32px;</string>
+          </property>
+          <property name="text">
+           <string>学校️</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="collegeCount">
+          <property name="styleSheet">
+           <string notr="true">font-size: 28px; font-weight: bold;</string>
+          </property>
+          <property name="text">
+           <string>6</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="collegeLabel">
+          <property name="styleSheet">
+           <string notr="true">font-size: 14px; opacity: 0.9;</string>
+          </property>
+          <property name="text">
+           <string>学院总数</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QFrame" name="chartFrame1">
+       <layout class="QVBoxLayout" name="verticalLayout_6">
+        <item>
+         <widget class="QLabel" name="chart1Title">
+          <property name="styleSheet">
+           <string notr="true">font-size: 16px; font-weight: bold; color: #2d3748;</string>
+          </property>
+          <property name="text">
+           <string>学生性别比例</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="pieChart">
+          <property name="styleSheet">
+           <string notr="true">font-family: monospace; font-size: 14px; color: #4a5568;</string>
+          </property>
+          <property name="text">
+           <string>
+性别比例
+┌─────────────────────────┐
+│    男: 58%  ████████████│
+│    女: 42%  ████████    │
+└─────────────────────────┘
+           </string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QFrame" name="chartFrame2">
+       <layout class="QVBoxLayout" name="verticalLayout_7">
+        <item>
+         <widget class="QLabel" name="chart2Title">
+          <property name="styleSheet">
+           <string notr="true">font-size: 16px; font-weight: bold; color: #2d3748;</string>
+          </property>
+          <property name="text">
+           <string>各学院学生人数统计</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="barChart">
+          <property name="styleSheet">
+           <string notr="true">font-family: monospace; font-size: 12px; color: #4a5568;</string>
+          </property>
+          <property name="text">
+           <string>
+学院人数
+─────────────────────────────────────
+计算机学院   ████████████████████ 320
+电子工程学院 ███████████████      250
+软件工程学院 ████████████         220
+经济管理学院 ███████████          200
+外国语学院   ███████              180
+艺术学院     █████                116
+─────────────────────────────────────
+           </string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <item>
+      <widget class="QFrame" name="recentFrame">
+       <layout class="QVBoxLayout" name="verticalLayout_8">
+        <item>
+         <widget class="QLabel" name="recentTitle">
+          <property name="styleSheet">
+           <string notr="true">font-size: 16px; font-weight: bold; color: #2d3748;</string>
+          </property>
+          <property name="text">
+           <string>最近动态</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="recentList">
+          <property name="styleSheet">
+           <string notr="true">font-size: 13px; color: #4a5568;</string>
+          </property>
+          <property name="text">
+           <string>
+• 学生张三成功注册新账号       2024-01-15 10:30
+• 教师李四更新个人信息         2024-01-15 09:20
+• 新增班级2024级1班           2024-01-14 16:45
+• 学生王五提交选课申请         2024-01-14 14:20
+• 学院发布新学期通知           2024-01-14 10:00
+• 用户admin登录系统           2024-01-15 08:00
+           </string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QFrame" name="quickFrame">
+       <layout class="QVBoxLayout" name="verticalLayout_9">
+        <item>
+         <widget class="QLabel" name="quickTitle">
+          <property name="styleSheet">
+           <string notr="true">font-size: 16px; font-weight: bold; color: #2d3748;</string>
+          </property>
+          <property name="text">
+           <string>快捷操作</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="0" column="0">
+           <widget class="QPushButton" name="AddStudentsquickBtn">
+            <property name="styleSheet">
+             <string notr="true">QPushButton {
+    background: #4299e1;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 13px;
+}
+QPushButton:hover {
+    background: #3182ce;
+}</string>
+            </property>
+            <property name="text">
+             <string>添加学生</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QPushButton" name="AddTeachersquickBtn">
+            <property name="styleSheet">
+             <string notr="true">QPushButton {
+    background: #48bb78;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 13px;
+}
+QPushButton:hover {
+    background: #38a169;
+}</string>
+            </property>
+            <property name="text">
+             <string>添加教师</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QPushButton" name="quickBtn3">
+            <property name="styleSheet">
+             <string notr="true">QPushButton {
+    background: #ed8936;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 13px;
+}
+QPushButton:hover {
+    background: #dd6b20;
+}</string>
+            </property>
+            <property name="text">
+             <string>数据统计</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QPushButton" name="quickBtn4">
+            <property name="styleSheet">
+             <string notr="true">QPushButton {
+    background: #805ad5;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 13px;
+}
+QPushButton:hover {
+    background: #6b46c1;
+}</string>
+            </property>
+            <property name="text">
+             <string>系统设置</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

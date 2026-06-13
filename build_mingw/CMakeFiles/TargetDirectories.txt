@@ -1,0 +1,9 @@
+D:/qt 2302/666_zhuanzong/build_mingw/CMakeFiles/666_zhuanzong.dir
+D:/qt 2302/666_zhuanzong/build_mingw/CMakeFiles/edit_cache.dir
+D:/qt 2302/666_zhuanzong/build_mingw/CMakeFiles/rebuild_cache.dir
+D:/qt 2302/666_zhuanzong/build_mingw/CMakeFiles/list_install_components.dir
+D:/qt 2302/666_zhuanzong/build_mingw/CMakeFiles/install.dir
+D:/qt 2302/666_zhuanzong/build_mingw/CMakeFiles/install/local.dir
+D:/qt 2302/666_zhuanzong/build_mingw/CMakeFiles/install/strip.dir
+D:/qt 2302/666_zhuanzong/build_mingw/CMakeFiles/666_zhuanzong_autogen_timestamp_deps.dir
+D:/qt 2302/666_zhuanzong/build_mingw/CMakeFiles/666_zhuanzong_autogen.dir

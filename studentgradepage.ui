@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>StudentGradePage</class>
+ <widget class="QWidget" name="StudentGradePage">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1000</width>
+    <height>650</height>
+   </rect>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QWidget {
+    background: #f7fafc;
+}
+QFrame {
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+QPushButton {
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 13px;
+}
+QTableView {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    alternate-background-color: #f7fafc;
+}
+QTableView::header {
+    background: #4299e1;
+    color: white;
+    font-weight: bold;
+}
+</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QFrame" name="headerFrame">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QLabel" name="titleLabel">
+        <property name="styleSheet">
+         <string notr="true">font-size: 20px; font-weight: bold; color: #2d3748;</string>
+        </property>
+        <property name="text">
+         <string>成绩查询</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Orientation::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QComboBox" name="semesterCombo">
+        <property name="minimumSize">
+         <size>
+          <width>150</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="exportBtn">
+        <property name="styleSheet">
+         <string notr="true">background: #4299e1; color: white;</string>
+        </property>
+        <property name="text">
+         <string>导出成绩单</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTableView" name="tableView">
+     <property name="selectionMode">
+      <enum>QAbstractItemView::SelectionMode::SingleSelection</enum>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QFrame" name="summaryFrame">
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QLabel" name="gpaLabel">
+        <property name="text">
+         <string>平均绩点：3.85</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font-size: 16px; font-weight: bold; color: #2d3748;</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="creditLabel">
+        <property name="text">
+         <string>总学分：85.5</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font-size: 16px; font-weight: bold; color: #2d3748;</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Orientation::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
